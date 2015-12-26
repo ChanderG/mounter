@@ -8,9 +8,13 @@ def handle_top_inputs(key):
 def main():
     """ Main interface """
     palette = []
-    body = urwid.Text("Hello world.", 'center')
-    ui = urwid.Filler(body, 'middle')
-    loop = urwid.MainLoop(ui, palette, unhandled_input=handle_top_inputs)
+
+    header = urwid.Text("Mounter", 'center')
+    body = urwid.Filler(urwid.Text("Hello world.", 'center'), 'middle', min_height=10)
+    footer = urwid.Text("q to quit.", 'right')
+
+    ui = urwid.Pile([(25, urwid.Frame(body, header=header, footer=footer))])
+    loop = urwid.MainLoop(urwid.Filler(ui, 'middle'), palette, unhandled_input=handle_top_inputs)
     loop.run()
 
 if __name__ == "__main__":
