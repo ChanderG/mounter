@@ -21,27 +21,17 @@ def getDeviceScreen():
     contents = urwid.Text(contents_, 'center')
 
     input_box = urwid.Edit('Enter device name: ', align='center', edit_text='sdb1')
-    enter_button = urwid.Button('Next', on_press=secondScreen)
+    enter_button = urwid.Button('Next', goToScreen, getMntpntScreen)
     button_columns = urwid.Columns([enter_button, ])
     button_line = urwid.Padding(button_columns, 'center', ('relative', 25))
 
     device_screen = urwid.Pile([title, urwid.Divider(), contents, input_box, button_line, ])
     return device_screen
 
-def firstScreen(button):
-    """ Function to render init screen. """
+def goToScreen(button, getRelevantScreen):
     global top
 
-    body = urwid.Filler(getDeviceScreen(), 'middle', min_height=10)
-    ui = getScreen(body)
-
-    top.original_widget = ui 
-
-def secondScreen(button):
-    """ Function to go from init screen to mount point selection screen. """
-    global top
-
-    body = urwid.Filler(getMntpntScreen(), 'middle', min_height=10)
+    body = urwid.Filler(getRelevantScreen(), 'middle', min_height=10)
     ui = getScreen(body)
 
     top.original_widget = ui 
@@ -57,8 +47,8 @@ def getMntpntScreen():
     contents = urwid.Text(contents_, 'center')
 
     input_box = urwid.Edit('Enter device name: ', align='center', edit_text='External')
-    back_button = urwid.Button('Back', on_press=firstScreen)
-    enter_button = urwid.Button('Next', on_press=secondScreen)
+    back_button = urwid.Button('Back', goToScreen, getDeviceScreen)
+    enter_button = urwid.Button('Next', goToScreen, getMntpntScreen)
     button_columns = urwid.Columns([back_button, enter_button, ])
     button_line = urwid.Padding(button_columns, 'center', ('relative', 25))
 
