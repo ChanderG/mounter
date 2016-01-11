@@ -89,12 +89,26 @@ def getCommandScreen():
     contents = urwid.Text(contents_, 'center')
 
     back_button = urwid.Button('Back', goToScreen, getMntpntScreen)
-    finish_button = urwid.Button('Finish', goToScreen, getCommandScreen)
+    finish_button = urwid.Button('Finish', goToScreen, getFinishScreen)
     button_columns = urwid.Columns([back_button, finish_button, ])
     button_line = urwid.Padding(button_columns, 'center', ('relative', 25))
 
     command_screen = urwid.Pile([title, urwid.Divider(), contents, urwid.Divider(), button_line, ])
     return command_screen
+
+def getFinishScreen():
+    """ Return finish screen. """
+    cmd = form_command()
+    res = ""
+    try: 
+        res = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as e:
+        res = e.output
+
+    title = urwid.Text("Result", 'center')
+    contents = urwid.Text(res, 'center')
+    finish_screen = urwid.Pile([title, urwid.Divider(), contents, ])
+    return finish_screen
 
 def getScreen(body):
     """ Actually creates a screen given a body widget.
