@@ -10,6 +10,20 @@ device_screen = None
 mntpnt_screen = None
 command_screen = None
 
+device_prefix = "/dev/"
+mount_point_prefix = "/media/"
+
+device_value_src = None
+mount_point_value_src = None
+
+def form_command():
+    """ Form the actual command. """
+    global device_value_src, mount_point_value_src
+
+    device = "{0}{1}".format(device_prefix, device_value_src.get_edit_text())
+    mount_point = "{0}{1}".format(mount_point_prefix, mount_point_value_src.get_edit_text())
+    return "sudo mount {0} {1}".format(device, mount_point)
+
 def getDeviceScreen():
     """ Return the device screen."""
     global device_screen
@@ -22,6 +36,10 @@ def getDeviceScreen():
     contents = urwid.Text(contents_, 'center')
 
     input_box = urwid.Edit('Enter device name: ', align='center', edit_text='sdb1')
+    # attach to global name
+    global device_value_src
+    device_value_src = input_box
+
     enter_button = urwid.Button('Next', goToScreen, getMntpntScreen)
     button_columns = urwid.Columns([enter_button, ])
     button_line = urwid.Padding(button_columns, 'center', ('relative', 25))
@@ -48,6 +66,10 @@ def getMntpntScreen():
     contents = urwid.Text(contents_, 'center')
 
     input_box = urwid.Edit('Enter device name: ', align='center', edit_text='External')
+    # attach to global name
+    global mount_point_value_src
+    mount_point_value_src = input_box
+
     back_button = urwid.Button('Back', goToScreen, getDeviceScreen)
     enter_button = urwid.Button('Next', goToScreen, getCommandScreen)
     button_columns = urwid.Columns([back_button, enter_button, ])
@@ -63,7 +85,7 @@ def getCommandScreen():
         return command_screen
 
     title = urwid.Text("Verify command: ", 'center')
-    contents_ = "TODO" # TODO
+    contents_ = form_command()
     contents = urwid.Text(contents_, 'center')
 
     back_button = urwid.Button('Back', goToScreen, getMntpntScreen)
